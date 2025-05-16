@@ -1,0 +1,49 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.so
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment / config
+.env
+*.env
+config.yaml
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor folders
+.vscode/
+.idea/
+
+# Model files
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+runs/
+logs/
+
+# Data files
+*.npy
+*.npz
+*.pkl
+*.h5
+*.mp4
+*.avi
+*.zip
+*.tar.gz
+
+# Data folders
+data/raw/
+data/keypoints_json/
+data/processed_npy/
+results/
+
+# 기타
+*.swp
+*.swo
+.idea/
