@@ -71,14 +71,14 @@ sign-language-translation/
 └── requirements.txt
 
 ```
-📁 data/
+### 📁 data/
 프로젝트의 원본 및 전처리 데이터를 저장하는 폴더
 
 raw/ : AIHub JSON, 영상(mp4) 등 원본 데이터
 
 processed/ : 모델 입력용 .npy 시퀀스 (T, 42, 2 형태)
 
-📁 models/
+### 📁 models/
 모델 정의 및 관련 함수
 
 cslr_model.py : LSTM/TCN 기반 수어 인식 모델
@@ -87,14 +87,14 @@ loss.py : CTC Loss 및 평가 함수
 
 llm_wrapper.py : GPT-3.5, KoGPT 등 문장 생성기 연결 모듈
 
-📁 training/
+### 📁 training/
 모델 학습 관련 코드 및 설정
 
 train_ctc.py : gloss 예측 모델 학습 스크립트
 
 config.yaml : 하이퍼파라미터, 경로 등 설정 파일
 
-📁 inference/
+### 📁 inference/
 학습된 모델을 사용해 예측을 수행하는 코드
 
 extract_keypoints.py : 추론용 JSON → .npy 변환 스크립트
@@ -103,14 +103,14 @@ predict_gloss.py : .npy 시퀀스 → gloss 시퀀스 예측
 
 generate_sentence.py : gloss → 자연어 문장 생성
 
-📁 notebooks/
+### 📁 notebooks/
 실험, 시각화, 디버깅을 위한 Jupyter 노트북
 
 01_visualize_sequence.ipynb : keypoint 시각화
 
 02_gloss_prediction_test.ipynb : 예측 테스트
 
-📁 docs/
+### 📁 docs/
 문서화 및 설명 정리
 
 project_overview.md : 전체 개요, 목적
@@ -121,7 +121,7 @@ model_architecture.md : 모델 구조 설명
 
 training_log.md : 실험 기록, 성능 로그
 
-📁 results/
+### 📁 results/
 실험 결과 및 예측 결과 저장
 
 gloss_output.txt : 예측된 gloss 시퀀스
@@ -130,14 +130,14 @@ final_sentence.txt : 생성된 자연어 문장
 
 training_curve.png : 학습 곡선 시각화
 
-📁 assets/
+### 📁 assets/
 시각 자료 및 도식 저장용
 
 architecture_diagram.png : 전체 시스템 구조
 
 model_flow.png, dataflow.png : 파이프라인 흐름도
 
-📄 루트 파일들
+### 📄 루트 파일들
 README.md : 프로젝트 설명 및 실행법 안내
 
 LICENSE : 오픈소스 라이선스 (MIT 권장)
