@@ -24,6 +24,7 @@ def generate_sentence(word_list):
     return response.text.strip()
 
 if __name__ == "__main__":
-    example_input = ['학교', '가다']
+    example_input = ['학교', '가다', '밥', '먹다']
     result = generate_sentence(example_input)
+    print("입력 단어:", example_input)
     print("생성된 문장:", result)
