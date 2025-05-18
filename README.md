@@ -46,13 +46,16 @@ sign-language-translation/
 │   └── config.yaml
 │
 ├── inference/             # 추론 및 실험용 스크립트
-│   ├── extract_keypoints.py     # JSON → npy 변환 (inference용)
 │   ├── predict_gloss.py         # gloss 예측
 │   └── generate_sentence.py     # gloss → 문장 변환
 │
 ├── results/               # 예측 결과, 시각화, 비교표
 │   ├── gloss_output.txt
 │   └── final_sentence.txt
+│
+├── preprocessing/
+│   ├── extract_keypoints.py     # JSON → npy 변환(키포인트)
+│   └── generate_label.py       # JSON → npy 변환(레이블)
 │
 ├── assets/                # 프로젝트용 그림, 도식, PPT용 자료
 │   └── architecture_diagram.png

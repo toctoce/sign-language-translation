@@ -41,6 +41,7 @@ logs/
 data/raw/
 data/keypoints_json/
 data/processed_npy/
+data/label_json
 results/
 
 # 기타
