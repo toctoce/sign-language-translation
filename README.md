@@ -20,7 +20,7 @@
 3. LSTM+CTC 기반 Gloss 시퀀스 예측
 4. GPT 기반 자연어 문장 생성
 
-![파이프라인](assets/pipeline.png)
+![파이프라인](assets/pipeline_model.png)
 1. 데이터셋 전처리
 2. keypoints, label을 이용해 모델 학습
 
