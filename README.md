@@ -1,4 +1,4 @@
-# 🤟 한국어 수어 영상 기반 문장 번역기
+# 🤟 \\한국어 수어 영상 기반 문장 번역기
 본 프로젝트는 수어 영상을 입력 받아 손동작을 인식하고, 단어(gloss) 시퀀스를 예측한 뒤, 이를 자연어 문장으로 변환하는 수어-텍스트 번역 시스템입니다.
 
 ---
@@ -9,6 +9,20 @@
 - 처리: LSTM + CTC 기반 gloss 예측
 - 출력: GPT 기반 자연어 문장 생성
 - 사용 데이터: AIHub 수어 영상 데이터셋
+
+---
+
+## 파이프라인
+![파이프라인](assets/pipeline_project.png)
+
+1. 수어 영상 입력
+2. MediaPipe를 통한 키포인트 추출
+3. LSTM+CTC 기반 Gloss 시퀀스 예측
+4. GPT 기반 자연어 문장 생성
+
+![파이프라인](assets/pipeline.png)
+1. 데이터셋 전처리
+2. keypoints, label을 이용해 모델 학습
 
 ---
 
@@ -65,13 +79,8 @@ sign-language-translation/
 │   ├── model_architecture.md
 │   └── training_log.md
 │
-├── notebooks/             # 개발, 실험용 Jupyter 노트북
-│   └── visualize_sequence.ipynb
-│
-├── README.md
-├── LICENSE
-├── .gitignore
-└── requirements.txt
+└── notebooks/             # 개발, 실험용 Jupyter 노트북
+    └── visualize_sequence.ipynb
 
 ```
 ### 📁 data/
