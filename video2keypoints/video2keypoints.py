@@ -4,19 +4,25 @@ import numpy as np
 import os
 import json
 
-def extract_keypoints_from_video(video_path):
+def get_video_from_path(video_path):
+    """비디오 파일 경로로부터 VideoCapture 객체를 반환합니다.
+    """
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        raise IOError(f"비디오 파일을 열 수 없습니다: {video_path}")
+    return cap
+
+def extract_keypoints_from_video(video: cv2.VideoCapture):
+    """비디오 데이터로부터 키포인트를 추출합니다.
+    """
     mp_pose = mp.solutions.pose
     mp_hands = mp.solutions.hands
     pose = mp_pose.Pose(static_image_mode=False)
     hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2)
     
-    cap = cv2.VideoCapture(video_path)
-    if not cap.isOpened():
-        raise IOError(f"비디오 파일을 열 수 없습니다: {video_path}")
-
     json_data_list = []
-    while cap.isOpened():
-        ret, frame = cap.read()
+    while video.isOpened():
+        ret, frame = video.read()
         if not ret:
             break
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -59,10 +65,30 @@ def extract_keypoints_from_video(video_path):
         }
         json_data_list.append(json_data)
 
-    cap.release()
     hands.close()
     pose.close()
     return json_data_list
+
+def convert_json_keypoint_to_npy(json_data):
+    """JSON 데이터로부터 키포인트를 추출합니다.
+    """
+    people = json_data['people']
+    def reshape_kps(kps):
+        arr = np.array(kps).reshape(-1, 3)
+        return arr[:, :2]  # (N, 2)
+    pose = reshape_kps(people.get('pose_keypoints_2d', []))      # (25, 2)
+    hand_l = reshape_kps(people.get('hand_left_keypoints_2d', []))  # (21, 2)
+    hand_r = reshape_kps(people.get('hand_right_keypoints_2d', [])) # (21, 2)
+    keypoints = np.concatenate([pose, hand_l, hand_r], axis=0)   # (67, 2)
+    return keypoints
+
+def convert_json_list_to_npy(json_data_list):
+    keypoint_seq = []
+    for json_data in json_data_list:
+        kp = convert_json_keypoint_to_npy(json_data)
+        keypoint_seq.append(kp)
+    keypoint_seq = np.stack(keypoint_seq, axis=0)  # (frame수, 67, 2)
+    return keypoint_seq
 
 def save_keypoints_to_json(json_data_list, save_dir):
     os.makedirs(save_dir, exist_ok=True)
@@ -77,10 +103,16 @@ if __name__ == "__main__":
     # 비디오 파일 경로와 저장 디렉토리 설정
     video_path = "./example.mp4"  
     save_dir = "./example"  # 프레임별 json 저장 디렉토리
+    out_path = "./example_keypoints.npy"  # 최종 npy 파일 저장 경로
     
     # 키포인트 추출 실행
-    json_data_list = extract_keypoints_from_video(video_path)
+    video = get_video_from_path(video_path)
+    json_data_list = extract_keypoints_from_video(video)
+    video.release()
+
+    save_keypoints_to_json(json_data_list, save_dir)
+    print(f"Saved keypoints to {save_dir}")
     
-    # JSON 파일로 저장
-    num_frames = save_keypoints_to_json(json_data_list, save_dir)
-    print(f"프레임별 keypoints json 저장 완료: {save_dir} (총 {num_frames}개)")
+    keypoint_seq = convert_json_list_to_npy(json_data_list)
+    np.save(out_path, keypoint_seq)
+    print(f"Saved keypoints to {out_path}, shape: {keypoint_seq.shape}")
