@@ -59,6 +59,8 @@ def main():
     model.eval()
     with torch.no_grad():
         logits = model(feature, feature_len)  # [1, T, C]
+        print(logits)
+        print(logits.shape)
         log_probs = logits.log_softmax(2)
         print(log_probs)
         pred_all = log_probs.argmax(dim=-1).squeeze(0).cpu().numpy()
