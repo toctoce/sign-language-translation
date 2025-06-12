@@ -36,6 +36,7 @@ logs/
 *.avi
 *.zip
 *.tar.gz
+*.json
 
 # Data folders
 data/raw/
