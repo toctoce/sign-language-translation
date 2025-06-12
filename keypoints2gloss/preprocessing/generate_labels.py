@@ -2,9 +2,15 @@ import os
 import json
 import numpy as np
 
-FEATURE_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data/processed_npy/train')
-LABEL_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data/label_json/morpheme_sen/02')
-OUT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data/processed_npy/train')
+# 데이터 디렉토리 경로 설정
+DATA_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data')
+RAW_ROOT = os.path.join(DATA_ROOT, 'raw')
+LABEL_JSON_ROOT = os.path.join(DATA_ROOT, 'label_json')
+PROCESSED_ROOT = os.path.join(DATA_ROOT, 'processed_npy')
+
+FEATURE_ROOT = os.path.join(PROCESSED_ROOT, 'train')
+LABEL_ROOT = os.path.join(LABEL_JSON_ROOT, 'morpheme_sen/02')
+OUT_ROOT = os.path.join(PROCESSED_ROOT, 'train')
 DICT_PATH = os.path.join(OUT_ROOT, 'gloss_dict.json')
 
 os.makedirs(OUT_ROOT, exist_ok=True)
@@ -17,22 +23,18 @@ def get_label_path(feature_path):
     Returns:
         label json 파일 경로
     """
-    base_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../data/label_json')
     fname = os.path.basename(feature_path)
-    
     # SEN/WRD 구분
     if 'NIA_SL_SEN' in fname:
         type_dir = 'morpheme_sen'
     else:
         type_dir = 'morpheme_word'
-        
     # REALXX에서 XX 추출
     import re
     real_num = re.search(r'REAL(\d+)', fname).group(1)
-    
     # feature.npy -> morpheme.json
     label_fname = fname.replace('_feature.npy', '_morpheme.json')
-    return os.path.join(base_path, type_dir, real_num, label_fname)
+    return os.path.join(LABEL_JSON_ROOT, type_dir, real_num, label_fname)
 
 def find_all_json_files(train_root):
     json_files = []
@@ -59,21 +61,16 @@ gloss2idx = {gloss: idx for idx, gloss in enumerate(sorted(gloss_set))}
 idx2gloss = {idx: gloss for gloss, idx in gloss2idx.items()}
 
 # 3. 각 샘플별 label 시퀀스 생성 및 저장
-
 for fname in os.listdir(FEATURE_ROOT):
     if fname.endswith('_feature.npy'):
         feature_path = os.path.join(FEATURE_ROOT, fname)
         feature = np.load(feature_path)
         feature_len = len(feature)
         label_path = get_label_path(feature_path)
-        
         with open(label_path, 'r', encoding='utf-8') as f:
             label_json = json.load(f)
-
-        duration = label_json['metaData']['duration']
         num_frames = feature_len
         label_seq = np.zeros(num_frames, dtype=np.int64)  # 프레임 수만큼 0으로 초기화
-        
         for seg in label_json['data']:
             start_frame = int(seg['start'] * 30)
             end_frame = int(seg['end'] * 30)
@@ -81,10 +78,8 @@ for fname in os.listdir(FEATURE_ROOT):
             for attr in seg['attributes']:
                 gloss_idx = gloss2idx[attr['name']]
                 label_seq[start_frame:end_frame+1] = gloss_idx
-
         label_seq = np.array(label_seq, dtype=np.int64)
-        # 파일명에서 _morpheme.json 제거, _label.npy로 저장
-        base = os.path.basename(path).replace('_morpheme.json', '')
+        base = fname.replace('_feature.npy', '')
         np.save(os.path.join(OUT_ROOT, f'{base}_label.npy'), label_seq)
         print(f'{base}_label.npy 저장 완료')
 
